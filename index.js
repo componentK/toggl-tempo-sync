@@ -13,7 +13,6 @@ const {
   tempoBaseURL,
   tempoUserName,
 } = require('./config');
-// const cache = require('./cache');
 
 const basicAuthToken = Buffer.from(`${togglAPIToken}:api_token`)
   .toString('base64');
