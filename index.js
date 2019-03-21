@@ -3,17 +3,20 @@ const axios = require('axios');
 const bluebird = require('bluebird');
 const moment = require('moment');
 const yargs = require('yargs');
+const isNumber = require('is-number');
+
+const { checkDate } = require('./helpers/date');
 const {
   togglAPIToken,
   togglBaseURL,
-  tempoAPIToken,
+  tempoPassword,
   tempoBaseURL,
   tempoUserName,
-  tagIssueMapping,
 } = require('./config');
-const cache = require('./cache');
+// const cache = require('./cache');
 
-const basicAuthToken = Buffer.from(`${togglAPIToken}:api_token`).toString('base64');
+const basicAuthToken = Buffer.from(`${togglAPIToken}:api_token`)
+  .toString('base64');
 const togglClient = axios.create({
   baseURL: togglBaseURL,
   headers: {
@@ -23,77 +26,56 @@ const togglClient = axios.create({
 
 const tempoClient = axios.create({
   baseURL: tempoBaseURL,
-  headers: {
-    Authorization: `Bearer ${tempoAPIToken}`,
+  auth: {
+    username: tempoUserName,
+    password: tempoPassword,
   },
 });
 
-const transferFromTogglToTempo = async (from, to) => {
+const transferFromTogglToTempo = async (from, to, dryRun = false) => {
   // get time entries from toggl
-  const startDate = encodeURIComponent(`${from}T00:00:00+04:00`);
-  const endDate = encodeURIComponent(`${to}T23:59:59+04:00`);
+  const startDate = encodeURIComponent(`${from}T00:00:00+01:00`);
+  const endDate = encodeURIComponent(`${to}T23:59:59+01:00`);
   const { data: timeEntries } = await togglClient
     .get(`time_entries?start_date=${startDate}&end_date=${endDate}`);
 
   console.log('number of time entries from toggl', timeEntries.length);
 
   // find all the unique task ids
-  const uniqueTaskIds = _(timeEntries)
-    .map(({ tid }) => tid)
+  const uniqueEntries = _(timeEntries)
+    .map(({ description }) => description)
     .filter(Boolean)
     .uniq()
     .value();
 
-  console.log('number of unique task ids', uniqueTaskIds.length);
+  console.log('number of unique entries', uniqueEntries.length);
 
-  // fetch task details for each task id
-  const tasks = await bluebird.map(uniqueTaskIds, taskId =>
-    cache.execute('getTaskDetails', `getTaskDetails::${taskId}`, async () => {
-      const { data: task } = await togglClient.get(`tasks/${taskId}`);
-      return task.data;
-    }));
-  const tasksById = _.groupBy(tasks, ({ id }) => id);
-
-  console.log('fetch task details from toggl');
-
-  // fetch worklogs
-  const { data: { results: worklogs } } = await tempoClient.get('/worklogs', {
-    params: {
-      from,
-      to,
-      limit: 1000,
-    },
-  });
-
-  const myWorkLogs = worklogs.filter(({ author }) =>
-    author.username === tempoUserName);
-
-  console.log('number of worklogs in tempo', myWorkLogs.length);
-
-  // delete all the worklogs
-  await bluebird.map(myWorkLogs, ({ tempoWorklogId }) =>
-    tempoClient.delete(`/worklogs/${tempoWorklogId}`));
-
-  console.log('deleted all worklogs in tempo');
-
-  // compute JIRA issueKey from tags & taskId
+  // compute JIRA issueKey from tags
   const validTimeEntries = timeEntries
     .map((timeEntry) => {
-      const { tid, tags = [] } = timeEntry;
+      const { description } = timeEntry;
 
-      if (tid) {
-        return {
-          ...timeEntry,
-          issueKey: tasksById[tid][0].name,
-        };
+      if (description.includes('-')) {
+        // e.g. description being "MAGENTO-123 This is a ticket"
+        const issueKey = description.split(' ', 1)
+          .shift();
+        const issueNum = issueKey.split('-')
+          .pop();
+        if (isNumber(issueNum)) {
+          return {
+            ...timeEntry,
+            issueKey: issueKey.toUpperCase(),
+            comment: description.replace(issueKey, ''),
+          };
+        }
       }
-
-      return {
-        ...timeEntry,
-        issueKey: _.get(tagIssueMapping.find(({ tag }) => tags.includes(tag)), 'issueKey'),
-      };
+      console.log(`Cannot parse out JIRA key from entry: "${description}"`);
+      return timeEntry;
     })
-    .filter(({ issueKey }) => Boolean(issueKey));
+    .filter(({ issueKey }) => Boolean(issueKey))
+    .filter(({ duration }) => duration >= 60);
+
+  if (dryRun) return;
 
   // create worklogs in tempo from toggl time entries
   await bluebird.map(
@@ -103,23 +85,29 @@ const transferFromTogglToTempo = async (from, to) => {
       description,
       start,
       duration,
-      tags = [],
+      comment,
     }) => (
       tempoClient.post('worklogs/', {
-        issueKey,
+        issue: {
+          key: issueKey,
+        },
         timeSpentSeconds: duration,
-        billableSeconds: duration,
-        startDate: moment(start).format('YYYY-MM-DD'),
-        startTime: moment(start).format('HH:mm:ss'),
-        description: tags.concat(description).join(' '),
-        authorUsername: tempoUserName,
+        billedSeconds: duration,
+        dateStarted: moment(start)
+          .toDate(),
+        comment,
+        description,
+        author: {
+          name: tempoUserName,
+        },
       })),
   );
 
-  console.log('number of worklogs added to temp', validTimeEntries.length);
+  console.log('number of worklogs added to tempo', validTimeEntries.length);
 };
 
-const from = yargs.argv.from || moment().format('YYYY-MM-DD');
-const { to } = yargs.argv;
+const from = checkDate(yargs.argv.from);
+const to = yargs.argv.to ? checkDate(yargs.argv.to) : from;
+const { dryRun } = yargs.argv;
 
-transferFromTogglToTempo(from, to || from);
+transferFromTogglToTempo(from, to, dryRun);

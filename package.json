@@ -1,8 +1,19 @@
 {
-  "name": "toggl",
+  "name": "coponentk-toggl-tempo-sync",
+  "description": "A fork of a sync extension between Toggl and Tempo",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "inspect": "nodemon --inspect index.js --dryRun true",
+    "break": "nodemon --inspect-brk=0.0.0.0 inedx.js --dryRun true",
+    "watch": "nodemon index.js --dryRun true",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/componentK/toggl-tempo-sync"
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "bluebird": "^3.5.1",
@@ -12,9 +23,12 @@
     "mkdirp-promise": "^5.0.1",
     "moment": "^2.22.2",
     "nconf": "^0.10.0",
-    "yargs": "^12.0.1"
+    "yargs": "^12.0.1",
+    "yarn": "^1.15.2",
+    "is-number": "^7.0.0"
   },
   "devDependencies": {
+    "nodemon": "^1.18.10",
     "eslint": "^4.9.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.7.0",
