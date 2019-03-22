@@ -26,7 +26,7 @@ Then supply the fields with your credentials for both platforms Tempo and Toggl.
  this will default to the `to` parameter if not provided. E.g. providing only `--to 01/31` will result in import for that whole day.
 * `dryRun` (default: false) - runs the command in dry mode, meaning only reading operations will happen, no write operations
 
-Valid date formats: `MM-DD-YYYY`, `MM-DD-YY`, `MM-DD`, can use `/` instead of `-`
+Valid date formats: `MM-DD-YYYY`, `YYYY-MM-DD`, `MM-DD-YY`, `MM-DD`, can use `/` instead of `-`
 - MM being month like `01` for January, use 0 to prepend, cannot be just 1 for January
 - DD being the date like `31` for the 31st
 - YY being the short year like `19` for 2019. Current year is assumed if not provided.

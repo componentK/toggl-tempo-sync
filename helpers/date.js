@@ -12,7 +12,7 @@ const checkDate = (inputDate) => {
     return moment()
       .format('YYYY-MM-DD');
   }
-  const check = moment(inputDate, ['MM-DD', 'MM-DD-YY', 'MM-DD-YYYY']);
+  const check = moment(inputDate, ['MM-DD', 'MM-DD-YY', 'MM-DD-YYYY', 'YYYY-MM-DD']);
   if (check.isValid()) {
     return check.format('YYYY-MM-DD');
   }
