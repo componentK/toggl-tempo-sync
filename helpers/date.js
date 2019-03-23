@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment')
 
 /**
  * Checks incoming date to be of correct format
@@ -10,15 +10,15 @@ const moment = require('moment');
 const checkDate = (inputDate) => {
   if (!inputDate) {
     return moment()
-      .format('YYYY-MM-DD');
+      .format('YYYY-MM-DD')
   }
-  const check = moment(inputDate, ['MM-DD', 'MM-DD-YY', 'MM-DD-YYYY', 'YYYY-MM-DD']);
+  const check = moment(inputDate, ['MM-DD', 'MM-DD-YY', 'MM-DD-YYYY', 'YYYY-MM-DD'])
   if (check.isValid()) {
-    return check.format('YYYY-MM-DD');
+    return check.format('YYYY-MM-DD')
   }
-  throw new Error(`Input is not of valid format: ${inputDate}`);
-};
+  throw new Error(`Input is not of valid format: ${inputDate}`)
+}
 
 module.exports = {
-  checkDate,
-};
+  checkDate
+}

@@ -49,6 +49,7 @@ It was also too destructive with Tempo by deleting all entries using `from` date
 * We are not using Toggl's paid features like `Tasks`,
  so it could be implemented, but that would require some major refactoring of this spaghetti
 * A flag to allow to compound short entries, maybe any entry below 5 min can be compacted with others
+* A flag that allows to compound all entries with the same summary/description field
 
 
 [install node]: https://nodejs.org/en/download/

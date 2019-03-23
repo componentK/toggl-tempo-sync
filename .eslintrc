@@ -1,3 +1,27 @@
-"extends": "airbnb"
-rules:
-  no-console: off
+{
+  "env": {
+    "node": true
+  },
+  "extends": ["standard"],
+  "rules": {
+    "prefer-template": 1,
+    "prefer-const": 1,
+    "valid-jsdoc": ["error", {
+      "preferType": {
+        "object": "Object"
+      },
+      "requireReturnDescription": false,
+      "requireParamDescription": false,
+      "matchDescription": ".+"
+    }],
+    "require-jsdoc": ["error", {
+      "require": {
+        "FunctionDeclaration": true,
+        "MethodDefinition": true,
+        "ClassDeclaration": true,
+        "ArrowFunctionExpression": true,
+        "FunctionExpression": true
+      }
+    }]
+  }
+}
