@@ -4,6 +4,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "author": {
+    "name": "Konstantin Kiritsenko",
+    "email": "k@componentk.com"
+  },
   "scripts": {
     "inspect": "./node_modules/.bin/nodemon --inspect index.js",
     "break": "./node_modules/.bin/nodemon --inspect-brk=0.0.0.0 inedx.js",

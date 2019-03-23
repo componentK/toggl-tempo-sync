@@ -5,6 +5,9 @@ tempoBaseURL: 'https://example.com/rest/tempo-timesheets/3/'
 tempoUserName: ''
 tempoPassword: ''
 
+dryRun: false
 # A list of issueKeys that will be compounded together instead of being a separate entry
-compactList:
-  - issueKey: 'MAGENTO-123'
+compact:
+  all: false
+  specificIssueKeys:
+    - 'MAGENTO-123'

@@ -4,6 +4,7 @@ const moment = require('moment')
 const isNumber = require('is-number')
 
 const { checkDate } = require('./helpers/date')
+const { getUniqueEntries } = require('./helpers/entry')
 const config = require('./config')
 const {
   togglAPIToken,
@@ -42,10 +43,16 @@ const transferFromTogglToTempo = async (from, to, dryRun = false) => {
   // get time entries from toggl
   const startDate = encodeURIComponent(`${from}T00:00:00+01:00`)
   const endDate = encodeURIComponent(`${to}T23:59:59+01:00`)
-  const { data: timeEntries } = await togglClient
+  let { data: timeEntries } = await togglClient
     .get(`time_entries?start_date=${startDate}&end_date=${endDate}`)
 
   console.log('number of time entries from toggl', timeEntries.length)
+
+  if (config.compact.all) {
+    const uniqueEntries = getUniqueEntries(timeEntries)
+    console.log('number of unique entries', uniqueEntries.length)
+    timeEntries = uniqueEntries
+  }
 
   // compute JIRA issueKey from tags
   const validTimeEntries = timeEntries
@@ -77,7 +84,7 @@ const transferFromTogglToTempo = async (from, to, dryRun = false) => {
   // create worklogs in tempo from toggl time entries
   await bluebird.map(
     validTimeEntries,
-    async ({ issueKey, description, start, duration, comment }) => (
+    async ({ issueKey, start, duration, comment }) => (
       tempoClient.post('worklogs/', {
         issue: {
           key: issueKey
@@ -87,7 +94,6 @@ const transferFromTogglToTempo = async (from, to, dryRun = false) => {
         dateStarted: moment(start)
           .toDate(),
         comment,
-        description,
         author: {
           name: tempoUserName
         }
