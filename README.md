@@ -45,10 +45,10 @@ The original implementation was using Toggl's paid feature "Tasks" to figure out
 It was also too destructive with Tempo by deleting all entries using `from` date.
 ##### Todo's
 * There is no actual sync between Toggl and Tempo, it is more of an importer than synchronizer
-* There is no timezone offset here, it assumes UTC+1
+* There is no timezone offset settings, it assumes UTC+1 when downloading from Toggl
 * We are not using Toggl's paid features like `Tasks`,
  so it could be implemented, but that would require some major refactoring of this spaghetti
-* A flag to allow to compound short entries, maybe any entry below 5 min can be compacted with others
-
+* A flag to allow to compound short entries instead of all, maybe any entry below 5 min can be compacted with others
+* Allow only specific Toggl clients
 
 [install node]: https://nodejs.org/en/download/

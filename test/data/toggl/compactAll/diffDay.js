@@ -1,4 +1,4 @@
-module.exports = [
+module.exports.payload = [
   {
     id: 1138234410,
     guid: '4bb563dcd150e8c6c6d55d9b076d6421',
@@ -89,12 +89,12 @@ module.exports = [
     wid: 1512934,
     pid: 150320558,
     billable: false,
-    start: '2019-03-21T10:57:15+00:00',
-    stop: '2019-03-21T11:00:24+00:00',
+    start: '2019-03-22T10:57:15+00:00',
+    stop: '2019-03-22T11:00:24+00:00',
     duration: 189,
     description: 'MAGENTO-2415 kill backend',
     duronly: false,
-    at: '2019-03-21T11:00:32+00:00',
+    at: '2019-03-22T11:00:32+00:00',
     uid: 2301412
   },
   {
@@ -103,12 +103,12 @@ module.exports = [
     wid: 1512934,
     pid: 150320558,
     billable: false,
-    start: '2019-03-21T11:04:33+00:00',
-    stop: '2019-03-21T13:18:54+00:00',
+    start: '2019-03-22T11:04:33+00:00',
+    stop: '2019-03-22T13:18:54+00:00',
     duration: 8061,
     description: 'MAGENTO-2415 kill backend',
     duronly: false,
-    at: '2019-03-21T13:18:07+00:00',
+    at: '2019-03-22T13:18:07+00:00',
     uid: 2301412
   },
   {
@@ -117,12 +117,12 @@ module.exports = [
     wid: 1512934,
     pid: 150320558,
     billable: false,
-    start: '2019-03-21T13:18:08+00:00',
-    stop: '2019-03-21T13:35:17+00:00',
+    start: '2019-03-22T13:18:08+00:00',
+    stop: '2019-03-22T13:35:17+00:00',
     duration: 1029,
     description: 'MAGENTO-2415 working with users solution',
     duronly: false,
-    at: '2019-03-21T14:49:21+00:00',
+    at: '2019-03-22T14:49:21+00:00',
     uid: 2301412
   },
   {
@@ -131,12 +131,12 @@ module.exports = [
     wid: 1512934,
     pid: 150320558,
     billable: false,
-    start: '2019-03-21T13:42:14+00:00',
-    stop: '2019-03-21T14:15:45+00:00',
+    start: '2019-03-22T13:42:14+00:00',
+    stop: '2019-03-22T14:15:45+00:00',
     duration: 2011,
     description: 'MAGENTO-2415 working with users solution',
     duronly: false,
-    at: '2019-03-21T14:48:59+00:00',
+    at: '2019-03-22T14:48:59+00:00',
     uid: 2301412
   },
   {
@@ -145,12 +145,44 @@ module.exports = [
     wid: 1512934,
     pid: 150320558,
     billable: false,
-    start: '2019-03-21T14:23:39+00:00',
-    stop: '2019-03-21T14:48:34+00:00',
+    start: '2019-03-22T14:23:39+00:00',
+    stop: '2019-03-22T14:48:34+00:00',
     duration: 1495,
     description: 'MAGENTO-2415 kill backend',
     duronly: false,
-    at: '2019-03-21T14:48:06+00:00',
+    at: '2019-03-22T14:48:06+00:00',
     uid: 2301412
+  }
+]
+module.exports.expect = [
+  {
+    start: '2019-03-21T08:54:00+00:00',
+    duration: 1249,
+    description: 'INT-12 Time dump'
+  },
+  {
+    start: '2019-03-21T09:09:23+00:00',
+    duration: 1281,
+    description: 'BIGC-823 preparing PR'
+  },
+  {
+    start: '2019-03-21T09:30:51+00:00',
+    duration: 556,
+    description: 'BIGC-824 bigc service hookup'
+  },
+  {
+    start: '2019-03-21T10:21:17+00:00',
+    duration: 1422,
+    description: 'MAGENTO-2415 kill backend'
+  },
+  {
+    start: '2019-03-22T10:57:15+00:00',
+    duration: 9745,
+    description: 'MAGENTO-2415 kill backend'
+  },
+  {
+    start: '2019-03-22T13:18:08+00:00',
+    duration: 3040,
+    description: 'MAGENTO-2415 working with users solution'
   }
 ]

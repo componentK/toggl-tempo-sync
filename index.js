@@ -49,9 +49,8 @@ const transferFromTogglToTempo = async (from, to, dryRun = false) => {
   console.log('number of time entries from toggl', timeEntries.length)
 
   if (config.compact.all) {
-    const uniqueEntries = getUniqueEntries(timeEntries)
-    console.log('number of unique entries', uniqueEntries.length)
-    timeEntries = uniqueEntries
+    timeEntries = getUniqueEntries(timeEntries)
+    console.log('number of unique entries', timeEntries.length)
   }
 
   // compute JIRA issueKey from tags

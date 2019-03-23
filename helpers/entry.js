@@ -1,4 +1,5 @@
 const _ = require('lodash')
+const moment = require('moment')
 
 /**
  * @typedef TogglEntry
@@ -27,22 +28,29 @@ function compactAllEntries (result, value, key, object) {
 }
 
 /**
- * Find all the unique entries
+ * Gets unique entries
+ * 1. Splits by date into 2 different lists
+ * 2. First map simply goes over the lists
+ * 3. Second map strips not needed properties
+ * 4. Transform creates a unique list of entries with durations summed up
+ * 5. Flatten concatenates the two lists
+ * 6. Returns the array instead of the lodash wrapper
  *
  * @param {TogglEntry[]} timeEntries
- * @todo-konstantin: break by date, else we compact everything!
  *
  * @return {TogglEntry[]}
  */
-const getUniqueEntries = (timeEntries) =>
-  _(timeEntries)
-    .map(({ description, start, duration }) => ({
-      description,
-      start,
-      duration
-    }))
-    .transform(compactAllEntries, [])
+const getUniqueEntries = (timeEntries) => {
+  return _(timeEntries)
+    .groupBy((value) => moment(value.start).format('MM-DD-YYYY'))
+    .map((entriesByDate) =>
+      _(entriesByDate)
+        .map(({ description, start, duration }) => ({ description, start, duration }))
+        .transform(compactAllEntries, [])
+        .value())
+    .flatten()
     .value()
+}
 
 module.exports = {
   getUniqueEntries
