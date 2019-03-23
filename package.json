@@ -5,10 +5,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "inspect": "nodemon --inspect index.js --dryRun true",
-    "break": "nodemon --inspect-brk=0.0.0.0 inedx.js --dryRun true",
-    "watch": "nodemon index.js --dryRun true",
-    "start": "node index.js"
+    "inspect": "./node_modules/.bin/nodemon --inspect index.js",
+    "break": "./node_modules/.bin/nodemon --inspect-brk=0.0.0.0 inedx.js",
+    "watch": "./node_modules/.bin/nodemon index.js",
+    "start": "node index.js",
+    "test": "./node_modules/.bin/mocha --recursive test/",
+    "lint": "./node_modules/.bin/eslint -c .eslintrc index.js helpers/ test/",
+    "cover": "./node_modules/.bin/nyc npm test"
   },
   "repository": {
     "type": "git",
@@ -34,6 +37,19 @@
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "mocha": "^6.0.2"
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0"
+  },
+  "standard": {
+    "env": [
+      "mocha"
+    ]
+  },
+  "nyc": {
+    "reporter": [
+      "html",
+      "text-summary",
+      "lcovonly"
+    ]
   }
 }

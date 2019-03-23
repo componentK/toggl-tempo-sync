@@ -7,6 +7,7 @@
     "prefer-template": 1,
     "prefer-const": 1,
     "valid-jsdoc": ["error", {
+      "requireReturn": false,
       "preferType": {
         "object": "Object"
       },

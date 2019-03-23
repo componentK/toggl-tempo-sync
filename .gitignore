@@ -7,3 +7,6 @@ node_modules/
 config/user.yml
 notes
 size-report.html
+coverage
+.nyc_output
+pnpm-lock.yaml

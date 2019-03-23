@@ -1,17 +1,17 @@
 const axios = require('axios')
 const bluebird = require('bluebird')
 const moment = require('moment')
-const yargs = require('yargs')
 const isNumber = require('is-number')
 
 const { checkDate } = require('./helpers/date')
+const config = require('./config')
 const {
   togglAPIToken,
   togglBaseURL,
   tempoPassword,
   tempoBaseURL,
   tempoUserName
-} = require('./config')
+} = config
 
 const basicAuthToken = Buffer.from(`${togglAPIToken}:api_token`)
   .toString('base64')
@@ -77,13 +77,7 @@ const transferFromTogglToTempo = async (from, to, dryRun = false) => {
   // create worklogs in tempo from toggl time entries
   await bluebird.map(
     validTimeEntries,
-    async ({
-      issueKey,
-      description,
-      start,
-      duration,
-      comment
-    }) => (
+    async ({ issueKey, description, start, duration, comment }) => (
       tempoClient.post('worklogs/', {
         issue: {
           key: issueKey
@@ -103,8 +97,7 @@ const transferFromTogglToTempo = async (from, to, dryRun = false) => {
   console.log('number of worklogs added to tempo', validTimeEntries.length)
 }
 
-const from = checkDate(yargs.argv.from)
-const to = yargs.argv.to ? checkDate(yargs.argv.to) : from
-const { dryRun } = yargs.argv
+const fromDate = checkDate(config.from)
+const toDate = config.to ? checkDate(config.to) : fromDate
 
-transferFromTogglToTempo(from, to, dryRun)
+transferFromTogglToTempo(fromDate, toDate, config.dryRun)
