@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/componentK/toggl-tempo-sync.svg?branch=master)](https://travis-ci.com/componentK/toggl-tempo-sync)
+[![Coverage Status](https://coveralls.io/repos/github/componentK/toggl-tempo-sync/badge.svg?branch=master)](https://coveralls.io/github/componentK/toggl-tempo-sync?branch=master)
+
 Toggl to Tempo
 ===
 Imports Toggl entries to Tempo provided the date start and end inputs
