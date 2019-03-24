@@ -1,12 +1,6 @@
 const _ = require('lodash')
 const moment = require('moment')
-
-/**
- * @typedef TogglEntry
- * @property {string} description
- * @property {date} start
- * @property {number} duration
- */
+const isNumber = require('is-number')
 
 /**
  * Compacts existing entries into one and sums up duration.
@@ -37,11 +31,10 @@ function compactAllEntries (result, value, key, object) {
  * 6. Returns the array instead of the lodash wrapper
  *
  * @param {TogglEntry[]} timeEntries
- *
  * @return {TogglEntry[]}
  */
-const getUniqueEntries = (timeEntries) => {
-  return _(timeEntries)
+const getUniqueEntries = timeEntries =>
+  _(timeEntries)
     .groupBy((value) => moment(value.start).format('MM-DD-YYYY'))
     .map((entriesByDate) =>
       _(entriesByDate)
@@ -50,8 +43,32 @@ const getUniqueEntries = (timeEntries) => {
         .value())
     .flatten()
     .value()
+
+/**
+ * Parses data and returns a modified TogglEntry
+ *
+ * @param {TogglEntry} timeEntry
+ * @return {TogglEntry | Object}
+ */
+const parseJiraData = timeEntry => {
+  const { description } = timeEntry
+
+  if (description.includes('-')) {
+    const issueKey = description.split(' ', 1).shift()
+    const issueNum = issueKey.split('-').pop()
+    if (isNumber(issueNum)) {
+      return {
+        ...timeEntry,
+        issueKey: issueKey.toUpperCase(),
+        comment: _(description).replace(issueKey, '').trim()
+      }
+    }
+  }
+  console.log(`Cannot parse out JIRA key from entry: "${description}"`)
+  return timeEntry
 }
 
 module.exports = {
-  getUniqueEntries
+  getUniqueEntries,
+  parseJiraData
 }

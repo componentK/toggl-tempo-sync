@@ -6,6 +6,7 @@ tempoUserName: ''
 tempoPassword: ''
 
 dryRun: false
+utc: '+01:00'
 # A list of issueKeys that will be compounded together instead of being a separate entry
 compact:
   all: false
