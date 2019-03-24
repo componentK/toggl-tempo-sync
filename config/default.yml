@@ -1,13 +1,14 @@
 togglBaseURL: 'https://www.toggl.com/api/v8/'
-
 togglAPIToken: ''
 
-tempoAPIToken: ''
-
-tempoBaseURL: 'https://api.tempo.io/2/'
-
+tempoBaseURL: 'https://example.com/rest/tempo-timesheets/3/'
 tempoUserName: ''
+tempoPassword: ''
 
-tagIssueMapping:
-  - tag: ''
-    issueKey: ''
+dryRun: false
+utc: '+01:00'
+# A list of issueKeys that will be compounded together instead of being a separate entry
+compact:
+  all: false
+  specificIssueKeys:
+    - 'MAGENTO-123'

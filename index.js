@@ -1,125 +1,58 @@
-const _ = require('lodash');
-const axios = require('axios');
-const bluebird = require('bluebird');
-const moment = require('moment');
-const yargs = require('yargs');
-const {
-  togglAPIToken,
-  togglBaseURL,
-  tempoAPIToken,
-  tempoBaseURL,
-  tempoUserName,
-  tagIssueMapping,
-} = require('./config');
-const cache = require('./cache');
+const bluebird = require('bluebird')
+const moment = require('moment')
 
-const basicAuthToken = Buffer.from(`${togglAPIToken}:api_token`).toString('base64');
-const togglClient = axios.create({
-  baseURL: togglBaseURL,
-  headers: {
-    Authorization: `Basic ${basicAuthToken}`,
-  },
-});
+const config = require('./config')
+const { formatDate } = require('./helpers/date')
+const { getUniqueEntries, parseJiraData } = require('./helpers/entry')
+const { tempoClient, togglClient } = require('./services/client.js')
+const { queryTogglEntries } = require('./services/togglEntries')
 
-const tempoClient = axios.create({
-  baseURL: tempoBaseURL,
-  headers: {
-    Authorization: `Bearer ${tempoAPIToken}`,
-  },
-});
+/**
+ * Main logic
+ *
+ * @param {string} from
+ * @param {string} to
+ * @param {boolean} dryRun
+ * @return {Promise<void>}
+ */
+const transferFromTogglToTempo = async (from, to, dryRun = false) => {
+  let timeEntries = await queryTogglEntries(togglClient(), from, to, config.utc)
+  console.log('number of time entries from toggl', timeEntries.length)
 
-const transferFromTogglToTempo = async (from, to) => {
-  // get time entries from toggl
-  const startDate = encodeURIComponent(`${from}T00:00:00+04:00`);
-  const endDate = encodeURIComponent(`${to}T23:59:59+04:00`);
-  const { data: timeEntries } = await togglClient
-    .get(`time_entries?start_date=${startDate}&end_date=${endDate}`);
+  if (config.compact.all) {
+    timeEntries = getUniqueEntries(timeEntries)
+    console.log('number of unique entries', timeEntries.length)
+  }
 
-  console.log('number of time entries from toggl', timeEntries.length);
+  const parsedEntries = timeEntries
+    .map((timeEntry) => parseJiraData(timeEntry))
+    .filter(({ issueKey }) => Boolean(issueKey))
 
-  // find all the unique task ids
-  const uniqueTaskIds = _(timeEntries)
-    .map(({ tid }) => tid)
-    .filter(Boolean)
-    .uniq()
-    .value();
-
-  console.log('number of unique task ids', uniqueTaskIds.length);
-
-  // fetch task details for each task id
-  const tasks = await bluebird.map(uniqueTaskIds, taskId =>
-    cache.execute('getTaskDetails', `getTaskDetails::${taskId}`, async () => {
-      const { data: task } = await togglClient.get(`tasks/${taskId}`);
-      return task.data;
-    }));
-  const tasksById = _.groupBy(tasks, ({ id }) => id);
-
-  console.log('fetch task details from toggl');
-
-  // fetch worklogs
-  const { data: { results: worklogs } } = await tempoClient.get('/worklogs', {
-    params: {
-      from,
-      to,
-      limit: 1000,
-    },
-  });
-
-  const myWorkLogs = worklogs.filter(({ author }) =>
-    author.username === tempoUserName);
-
-  console.log('number of worklogs in tempo', myWorkLogs.length);
-
-  // delete all the worklogs
-  await bluebird.map(myWorkLogs, ({ tempoWorklogId }) =>
-    tempoClient.delete(`/worklogs/${tempoWorklogId}`));
-
-  console.log('deleted all worklogs in tempo');
-
-  // compute JIRA issueKey from tags & taskId
-  const validTimeEntries = timeEntries
-    .map((timeEntry) => {
-      const { tid, tags = [] } = timeEntry;
-
-      if (tid) {
-        return {
-          ...timeEntry,
-          issueKey: tasksById[tid][0].name,
-        };
-      }
-
-      return {
-        ...timeEntry,
-        issueKey: _.get(tagIssueMapping.find(({ tag }) => tags.includes(tag)), 'issueKey'),
-      };
-    })
-    .filter(({ issueKey }) => Boolean(issueKey));
+  if (dryRun) return
 
   // create worklogs in tempo from toggl time entries
   await bluebird.map(
-    validTimeEntries,
-    async ({
-      issueKey,
-      description,
-      start,
-      duration,
-      tags = [],
-    }) => (
-      tempoClient.post('worklogs/', {
-        issueKey,
+    parsedEntries,
+    async ({ issueKey, start, duration, comment }) => (
+      tempoClient().post('worklogs/', {
+        issue: {
+          key: issueKey
+        },
         timeSpentSeconds: duration,
-        billableSeconds: duration,
-        startDate: moment(start).format('YYYY-MM-DD'),
-        startTime: moment(start).format('HH:mm:ss'),
-        description: tags.concat(description).join(' '),
-        authorUsername: tempoUserName,
-      })),
-  );
+        billedSeconds: duration,
+        dateStarted: moment(start)
+          .toDate(),
+        comment,
+        author: {
+          name: config.tempoUserName
+        }
+      }))
+  )
 
-  console.log('number of worklogs added to temp', validTimeEntries.length);
-};
+  console.log('number of worklogs added to tempo', parsedEntries.length)
+}
 
-const from = yargs.argv.from || moment().format('YYYY-MM-DD');
-const { to } = yargs.argv;
+const fromDate = formatDate(config.from)
+const toDate = config.to ? formatDate(config.to) : fromDate
 
-transferFromTogglToTempo(from, to || from);
+transferFromTogglToTempo(fromDate, toDate, config.dryRun)
