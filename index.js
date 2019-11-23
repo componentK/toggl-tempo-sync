@@ -1,6 +1,9 @@
 const bluebird = require('bluebird')
 const moment = require('moment')
 
+/**
+ * @var {ConfigResponse}config
+ */
 const config = require('./config')
 const { formatDate } = require('./helpers/date')
 const { getUniqueEntries, parseJiraData } = require('./helpers/entry')
@@ -10,9 +13,9 @@ const { queryTogglEntries } = require('./services/togglEntries')
 /**
  * Main logic
  *
- * @param {string} from
- * @param {string} to
- * @param {boolean} dryRun
+ * @param {date8601} from
+ * @param {date8601} to
+ * @param {boolean|string} dryRun
  * @return {Promise<void>}
  */
 const transferFromTogglToTempo = async (from, to, dryRun = false) => {
@@ -40,8 +43,7 @@ const transferFromTogglToTempo = async (from, to, dryRun = false) => {
         },
         timeSpentSeconds: duration,
         billedSeconds: duration,
-        dateStarted: moment(start)
-          .toDate(),
+        dateStarted: moment(start).utcOffset(config.utc).toISOString(true),
         comment,
         author: {
           name: config.tempoUserName
@@ -56,3 +58,6 @@ const fromDate = formatDate(config.from)
 const toDate = config.to ? formatDate(config.to) : fromDate
 
 transferFromTogglToTempo(fromDate, toDate, config.dryRun)
+  .catch(function (error) {
+    console.log(error)
+  })
