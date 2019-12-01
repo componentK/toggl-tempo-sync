@@ -16,7 +16,7 @@ function compactAllEntries (result, value, key, object) {
   if (!duplicate) {
     value.duration = _.reduce(object, function (sum, entry) {
       return sum + (value.description === entry.description ? entry.duration : 0)
-    }, 0) / 60 // divide by 60 as toggle wants it in seconds now
+    }, 0)
     result.push(value)
   }
 }

@@ -157,32 +157,32 @@ module.exports.payload = [
 module.exports.expect = [
   {
     start: '2019-03-21T08:54:00+00:00',
-    duration: 20.816666666666666,
+    duration: 1249,
     description: 'INT-12 Time dump'
   },
   {
     start: '2019-03-21T09:09:23+00:00',
-    duration: 21.35,
+    duration: 1281,
     description: 'BIGC-823 preparing PR'
   },
   {
     start: '2019-03-21T09:30:51+00:00',
-    duration: 9.266666666666667,
+    duration: 556,
     description: 'BIGC-824 bigc service hookup'
   },
   {
     start: '2019-03-21T10:21:17+00:00',
-    duration: 23.7,
+    duration: 1422,
     description: 'MAGENTO-2415 kill backend'
   },
   {
     start: '2019-03-22T10:57:15+00:00',
-    duration: 162.41666666666666,
+    duration: 9745,
     description: 'MAGENTO-2415 kill backend'
   },
   {
     start: '2019-03-22T13:18:08+00:00',
-    duration: 50.666666666666664,
+    duration: 3040,
     description: 'MAGENTO-2415 working with users solution'
   }
 ]

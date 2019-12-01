@@ -9,8 +9,7 @@ const moment = require('moment')
  */
 const formatDate = (inputDate) => {
   if (!inputDate) {
-    return moment()
-      .format('YYYY-MM-DD')
+    return moment().format('YYYY-MM-DD')
   }
   const check = moment(inputDate, ['MM-DD', 'MM-DD-YY', 'MM-DD-YYYY', 'YYYY-MM-DD'])
   if (check.isValid()) {

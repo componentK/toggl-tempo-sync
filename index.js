@@ -1,5 +1,4 @@
 const bluebird = require('bluebird')
-const moment = require('moment')
 
 /**
  * @var {ConfigResponse}config
@@ -40,16 +39,13 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
     parsedEntries,
     async ({ issueKey, start, duration, comment }) => (
       tempoClient().post('worklogs/', {
-        issue: {
-          key: issueKey
-        },
+        worker: config.tempoWorker,
+        originTaskId: issueKey,
+        started: formatDate(start),
         timeSpentSeconds: duration,
-        billedSeconds: duration,
-        dateStarted: moment(start).utcOffset(utc).toISOString(true),
+        billableSeconds: duration,
         comment,
-        author: {
-          name: config.tempoUserName
-        }
+        includeNonWorkingDays: true
       }))
   )
 
@@ -86,5 +82,5 @@ if (config.delete) {
     .catch(error => console.log(error.message))
 } else {
   transferFromTogglToTempo(fromDate, toDate, config.utc, config.dryRun)
-    .catch(error => console.log(error.message))
+    .catch(error => console.log(error))
 }
