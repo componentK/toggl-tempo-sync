@@ -9,17 +9,19 @@ const { formatDate } = require('./helpers/date')
 const { getUniqueEntries, parseJiraData } = require('./helpers/entry')
 const { tempoClient, togglClient } = require('./services/client.js')
 const { queryTogglEntries } = require('./services/togglEntries')
+const { queryTempoEntries } = require('./services/tempoEntries')
 
 /**
- * Main logic
+ * Main logic for toggl to tempo entry creation
  *
  * @param {date8601} from
  * @param {date8601} to
+ * @param {string} utc
  * @param {boolean|string} dryRun
  * @return {Promise<void>}
  */
-const transferFromTogglToTempo = async (from, to, dryRun = false) => {
-  let timeEntries = await queryTogglEntries(togglClient(), from, to, config.utc)
+const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
+  let timeEntries = await queryTogglEntries(togglClient(), from, to, utc)
   console.log('number of time entries from toggl', timeEntries.length)
 
   if (config.compact.all) {
@@ -43,7 +45,7 @@ const transferFromTogglToTempo = async (from, to, dryRun = false) => {
         },
         timeSpentSeconds: duration,
         billedSeconds: duration,
-        dateStarted: moment(start).utcOffset(config.utc).toISOString(true),
+        dateStarted: moment(start).utcOffset(utc).toISOString(true),
         comment,
         author: {
           name: config.tempoUserName
@@ -54,10 +56,35 @@ const transferFromTogglToTempo = async (from, to, dryRun = false) => {
   console.log('number of worklogs added to tempo', parsedEntries.length)
 }
 
+/**
+ * Main logic for deleting Tempo entries
+ *
+ * @param {date8601} from
+ * @param {date8601} to
+ * @param {string} utc
+ * @param {boolean|string} dryRun
+ * @return {Promise<void>}
+ */
+const removeFromTempo = async (from, to, utc, dryRun = false) => {
+  const entries = await queryTempoEntries(tempoClient(), config.tempoWorker, from, to)
+
+  if (dryRun) return
+
+  await bluebird.map(
+    entries,
+    async ({ tempoWorklogId }) => (
+      tempoClient().delete(`worklogs/${tempoWorklogId}`))
+  )
+  console.log(`Finished removing ${entries.length} entries`)
+}
+
 const fromDate = formatDate(config.from)
 const toDate = config.to ? formatDate(config.to) : fromDate
 
-transferFromTogglToTempo(fromDate, toDate, config.dryRun)
-  .catch(function (error) {
-    console.log(error)
-  })
+if (config.delete) {
+  removeFromTempo(fromDate, toDate, config.utc, config.dryRun)
+    .catch(error => console.log(error.message))
+} else {
+  transferFromTogglToTempo(fromDate, toDate, config.utc, config.dryRun)
+    .catch(error => console.log(error.message))
+}

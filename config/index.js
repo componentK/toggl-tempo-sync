@@ -13,6 +13,9 @@ const format = {
 
 const nconfProvider = new nconf.Provider()
 
+// command line parameters
+nconfProvider.argv({ parseValues: true })
+
 nconfProvider.file('user', {
   file: `${__dirname}/user.yml`,
   format
@@ -22,8 +25,5 @@ nconfProvider.file('app-default', {
   file: `${__dirname}/default.yml`,
   format
 })
-
-// command line parameters
-nconfProvider.argv({ parseValues: true })
 
 module.exports = nconfProvider.get()

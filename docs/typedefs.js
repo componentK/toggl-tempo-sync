@@ -7,6 +7,16 @@
  */
 
 /**
+ * @typedef TempoEntry
+ * @property {number} id - entry to reference
+ * @property {number} jiraWorklogId - seems to be the same as id
+ * @property {string} comment - e.g. "This is a ticket"
+ * @property {date8601} dateStarted - ISO 8601 format
+ * @property {date8601} dateCreated - ISO 8601 format
+ * @property {date8601} dateUpdated - ISO 8601 format
+ */
+
+/**
  * @typedef {string} date8601
  * @description String in the ISO 8601 format, e.g. YYYY-MM-ddT00:00:00.000+0000
  */
@@ -15,7 +25,9 @@
  * @property {string} utc - e.g. +04:00 or -05:00
  * @property {date8601} to
  * @property {date8601} from
+ * @property {boolean|string|undefined} delete - whether to delete entries from Atlassian Tempo
  * @property {boolean|string|undefined} dryRun - whether to run
+ * @property {string} tempoWorker - worker email address
  * @property {string} tempoUserName - user name to log in to Tempo/JIRA
  * @property {string} tempoPassword - password to log in to Tempo/JIRA
  * @property {string} tempoBaseURL - URL of Tempo/JIRA API service

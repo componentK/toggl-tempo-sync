@@ -56,6 +56,7 @@ Available configurations:
 * `tempoBaseURL` - you will need to adjust this to your JIRA url + tempo API path. For the most part, just replace `example.com` 
 with the JIRA URL
 * `utc` (default: +01:00) - UTC offset to be used for Toggl entry retrieval in *ISO 8601*, e.g. `+01:00` for UTC+1
+* `delete` (default: false) - deletes the specified date entries from Tempo on the Atlassian server
 * `dryRun` (default: false) - runs the command in dry mode, meaning only reading operations will happen, no write operations 
 * `compact`
   * `all` (default: false)
@@ -78,6 +79,8 @@ node index.js --from 03-15 --to 03-18 --dryRun true
 node index.js --from 03-15 --to 03-18 --utc +03:00
 //
 npm start -- --from=03-15 --to=03-18
+//
+node index.js --from 03-15 --to 03-18 --dryMode --delete
 ```
 
 ## Misc

@@ -1,11 +1,13 @@
 togglBaseURL: 'https://www.toggl.com/api/v8/'
 togglAPIToken: ''
 
-tempoBaseURL: 'https://example.com/rest/tempo-timesheets/3/'
+tempoBaseURL: 'https://example.com/rest/tempo-timesheets/4/'
 tempoUserName: ''
 tempoPassword: ''
+tempoWorker: 'worker@email.com'
 
 dryRun: false
+delete: false
 utc: '+01:00'
 # A list of issueKeys that will be compounded together instead of being a separate entry
 compact:
