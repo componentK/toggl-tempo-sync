@@ -74,13 +74,14 @@ const removeFromTempo = async (from, to, utc, dryRun = false) => {
   console.log(`Finished removing ${entries.length} entries`)
 }
 
-const fromDate = formatDate(config.from)
-const toDate = config.to ? formatDate(config.to) : fromDate
+const fromDate = formatDate(config.from ? config.from : config._[0])
+const configToDate = config.to ? formatDate(config.to) : config.to
+const toDate = configToDate || (config._[1] ? formatDate(config._[1]) : fromDate)
 
 if (config.delete) {
   removeFromTempo(fromDate, toDate, config.utc, config.dryRun)
     .catch(error => console.log(error.message))
 } else {
   transferFromTogglToTempo(fromDate, toDate, config.utc, config.dryRun)
-    .catch(error => console.log(error))
+    .catch(error => console.log(error.message))
 }

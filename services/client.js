@@ -13,6 +13,7 @@ module.exports.tempoClient = (options = {}) => axios.create({
     username: tempoUserName,
     password: tempoPassword
   },
+  timeout: 60 * 4 * 1000, // 4 min
   ...options
 })
 

@@ -18,7 +18,7 @@ and the comment for the work log will be `This is a ticket`.
   * `scoop install nodejs` if you have scoop on your windows
 * Confirm by typing `npm -v` in the terminal, should see a version output, e.g. `6.9.0`
 * Secondly, install this repo on your computer and update the packages:
-```
+```shell script
 git clone git@github.com:componentK/toggl-tempo-sync.git
 cd toggl-tempo-sync
 npm install
@@ -71,7 +71,7 @@ file, but it can be used when calling node (see Running section with parameter u
 Try running in `dryMode` first, just to make sure things are correct. The console will output a few errors if they occur,
 but when the error happens, the entry is just skipped instead of halting the program.
 
-```
+```shell script
 node index.js --from 03-15 --to 03-18
 //
 node index.js --from 03-15 --to 03-18 --dryRun true
@@ -80,7 +80,11 @@ node index.js --from 03-15 --to 03-18 --utc +03:00
 //
 npm start -- --from=03-15 --to=03-18
 //
-node index.js --from 03-15 --to 03-18 --dryMode --delete
+node index.js --from 03-15 --to 03-18 --dryRun --delete
+
+// Can also accept no name parameters as first two
+node index.js 03-15 03-18 --dryRun
+npm start 03-15 03-18 --dryRun
 ```
 
 ## Misc
@@ -93,5 +97,6 @@ It was also too destructive with Tempo by deleting all entries using `from` date
  so it could be implemented, but that would require some major refactoring of this spaghetti
 * A flag to allow to compound short entries instead of all, maybe any entry below 5 min can be compacted with others
 * Allow only specific Toggl clients to be imported
+* Publish to NPM so that the plugin is globally available
 
 [install node]: https://nodejs.org/en/download/
