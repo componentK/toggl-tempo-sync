@@ -4,10 +4,11 @@ const { formatDate, fromDate, toDate } = require('../../helpers/date')
 describe('Date helper tests', () => {
   describe('Make sure the dates are output correctly', () => {
     it('Date is well formatted', () => {
+      const year = new Date().getFullYear()
       const inputs = [
         ['03-23-2019', '2019-03-23'],
         ['03-23-19', '2019-03-23'],
-        ['03-23', '2019-03-23'],
+        ['03-23', `${year}-03-23`],
         ['2019-03-23', '2019-03-23']
       ]
       inputs.forEach((input) => {
