@@ -19,6 +19,25 @@ const formatDate = (inputDate) => {
 }
 
 /**
+ * Outputs tempo style date
+ *
+ * @param {string} inputDate
+ * @param {string} utc
+ * @return {string} - returns standard 'YYYY-MM-DD HH:mm Z' format string
+ *
+ * @throws Error - in case the input is not valid
+ * @todo: unfortunately tempo API does not allow time or timezone entries
+ */
+// const formatTempoFromDate = (inputDate, utc) => {
+//   const check = moment(inputDate, ['YYYY-MM-DD HH:mm Z'])
+//   if (check.isValid()) {
+//     check.utcOffset(utc)
+//     return check.format('yyyy-MM-dd HH:mm')
+//   }
+//   throw new Error(`Input is not of valid format: ${inputDate}`)
+// }
+
+/**
  * Encodes the From date into a proper format
  *
  * @param {string} date - date in 'YYYY-MM-DD' format

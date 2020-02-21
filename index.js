@@ -64,7 +64,10 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
 const removeFromTempo = async (from, to, utc, dryRun = false) => {
   const entries = await queryTempoEntries(tempoClient(), config.tempoWorker, from, to)
 
-  if (dryRun) return
+  if (dryRun) {
+    console.log(`Would be removing ${entries.length} entries`)
+    return
+  }
 
   await bluebird.map(
     entries,
