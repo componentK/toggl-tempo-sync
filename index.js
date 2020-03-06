@@ -38,14 +38,14 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
   await bluebird.map(
     parsedEntries,
     async ({ issueKey, start, duration, comment }) => (
+      // TODO fix and handle 429 error Too many requests
       tempoClient().post('worklogs/', {
-        worker: config.tempoWorker,
-        originTaskId: issueKey,
-        started: formatDate(start),
+        authorAccountId: config.tempoWorker,
+        issueKey: issueKey,
+        startDate: formatDate(start),
         timeSpentSeconds: duration,
         billableSeconds: duration,
-        comment,
-        includeNonWorkingDays: true
+        description: comment
       }))
   )
 
@@ -83,8 +83,8 @@ const toDate = configToDate || (config._[1] ? formatDate(config._[1]) : fromDate
 
 if (config.delete) {
   removeFromTempo(fromDate, toDate, config.utc, config.dryRun)
-    .catch(error => console.log(error.message))
+    .catch(error => console.log(error.message, error))
 } else {
   transferFromTogglToTempo(fromDate, toDate, config.utc, config.dryRun)
-    .catch(error => console.log(error.message))
+    .catch(error => console.log(error.message, error))
 }
