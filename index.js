@@ -10,6 +10,10 @@ const { tempoClient, togglClient } = require('./services/client.js')
 const { queryTogglEntries } = require('./services/togglEntries')
 const { queryTempoEntries } = require('./services/tempoEntries')
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /**
  * Main logic for toggl to tempo entry creation
  *
@@ -37,8 +41,9 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
   // create worklogs in tempo from toggl time entries
   await bluebird.map(
     parsedEntries,
-    async ({ issueKey, start, duration, comment }) => (
-      // TODO fix and handle 429 error Too many requests
+    async ({ issueKey, start, duration, comment }) => {
+      await sleep(Math.random() * 20000)
+      console.log(issueKey + ' ' + comment)
       tempoClient().post('worklogs/', {
         authorAccountId: config.tempoWorker,
         issueKey: issueKey,
@@ -46,7 +51,7 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
         timeSpentSeconds: duration,
         billableSeconds: duration,
         description: comment
-      }))
+      })}
   )
 
   console.log('number of worklogs added to tempo', parsedEntries.length)
