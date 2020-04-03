@@ -10,6 +10,10 @@ const { tempoClient, togglClient } = require('./services/client.js')
 const { queryTogglEntries } = require('./services/togglEntries')
 const { queryTempoEntries } = require('./services/tempoEntries')
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /**
  * Main logic for toggl to tempo entry creation
  *
@@ -37,16 +41,17 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
   // create worklogs in tempo from toggl time entries
   await bluebird.map(
     parsedEntries,
-    async ({ issueKey, start, duration, comment }) => (
+    async ({ issueKey, start, duration, comment }) => {
+      await sleep(Math.random() * 20000)
+      console.log(issueKey + ' ' + comment)
       tempoClient().post('worklogs/', {
-        worker: config.tempoWorker,
-        originTaskId: issueKey,
-        started: formatDate(start),
+        authorAccountId: config.tempoWorker,
+        issueKey: issueKey,
+        startDate: formatDate(start),
         timeSpentSeconds: duration,
         billableSeconds: duration,
-        comment,
-        includeNonWorkingDays: true
-      }))
+        description: comment
+      })}
   )
 
   console.log('number of worklogs added to tempo', parsedEntries.length)
@@ -83,8 +88,8 @@ const toDate = configToDate || (config._[1] ? formatDate(config._[1]) : fromDate
 
 if (config.delete) {
   removeFromTempo(fromDate, toDate, config.utc, config.dryRun)
-    .catch(error => console.log(error.message))
+    .catch(error => console.log(error.message, error))
 } else {
   transferFromTogglToTempo(fromDate, toDate, config.utc, config.dryRun)
-    .catch(error => console.log(error.message))
+    .catch(error => console.log(error.message, error))
 }

@@ -1,9 +1,11 @@
 togglBaseURL: 'https://www.toggl.com/api/v8/'
 togglAPIToken: ''
 
-tempoBaseURL: 'https://example.com/rest/tempo-timesheets/4/'
+tempoBaseURL: 'https://api.tempo.io/core/3/'
 tempoUserName: ''
 tempoPassword: ''
+# email or ID. 
+# To get ID go to your Jira profile page and extract it from URL https://yoursite.atlassian.net/jira/people/<ID>
 tempoWorker: 'worker@email.com'
 
 dryRun: false

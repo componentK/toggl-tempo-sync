@@ -4,14 +4,14 @@ const {
   togglBaseURL,
   tempoPassword,
   tempoBaseURL,
-  tempoUserName
+  tempoUserName,
+  tempoAPIToken
 } = require('../config')
 
 module.exports.tempoClient = (options = {}) => axios.create({
   baseURL: tempoBaseURL,
-  auth: {
-    username: tempoUserName,
-    password: tempoPassword
+  headers: {
+    Authorization: `Bearer ${tempoAPIToken}`,
   },
   timeout: 60 * 4 * 1000, // 4 min
   ...options
