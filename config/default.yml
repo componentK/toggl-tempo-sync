@@ -1,10 +1,10 @@
 togglBaseURL: 'https://www.toggl.com/api/v8/'
 togglAPIToken: ''
 
-tempoBaseURL: 'https://example.com/rest/tempo-timesheets/4/'
-tempoUserName: ''
-tempoPassword: ''
-tempoWorker: 'worker@email.com'
+# Get your account ID by using the Atlassian/JIRA API: https://your-domain.atlassian.com/rest/api/3/myself
+JiraAccountId: 'atlassian_user_account_id'
+tempoCloudURL: 'https://api.tempo.io/core/3/'
+tempoCloudApiKey: 'api_bearer_token_example'
 
 dryRun: false
 delete: false

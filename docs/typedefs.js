@@ -27,12 +27,11 @@
  * @property {date8601} from
  * @property {boolean|string|undefined} delete - whether to delete entries from Atlassian Tempo
  * @property {boolean|string|undefined} dryRun - whether to run
- * @property {string} tempoWorker - worker email address
- * @property {string} tempoUserName - user name to log in to Tempo/JIRA
- * @property {string} tempoPassword - password to log in to Tempo/JIRA
- * @property {string} tempoBaseURL - URL of Tempo/JIRA API service
  * @property {string} togglBaseURL - URL of Toggl API service
+ * @property {string} tempoCloudURL - URL of Toggl Cloud API
+ * @property {string} tempoCloudApiKey - Toggl Cloud API Authorize Key
  * @property {string} togglAPIToken - Toggl API token
+ * @property {string} JiraAccountId - Atlassian main user account ID
  * @property {ConfigResponseCompact} compact
  */
 

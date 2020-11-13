@@ -2,29 +2,34 @@ const axios = require('axios')
 const {
   togglAPIToken,
   togglBaseURL,
-  tempoPassword,
-  tempoBaseURL,
-  tempoUserName
+  tempoCloudURL,
+  tempoCloudApiKey
 } = require('../config')
 
-module.exports.tempoClient = (options = {}) => axios.create({
-  baseURL: tempoBaseURL,
-  auth: {
-    username: tempoUserName,
-    password: tempoPassword
-  },
-  timeout: 60 * 4 * 1000, // 4 min
-  ...options
-})
+module.exports.tempoClient = (options = {}) => {
+  return axios.create({
+    baseURL: tempoCloudURL,
+    headers: {
+      Authorization: `Bearer ${tempoCloudApiKey}`
+    },
+    timeout: 60 * 4 * 1000, // 4 min
+    ...options
+  })
+}
+
+/**
+ * Token buffering
+ * @param {string} token
+ * @return {string}
+ */
+const bufferToken = (token) =>
+  Buffer.from(`${token}:api_token`).toString('base64')
 
 module.exports.togglClient = (options = {}) => {
-  const basicAuthToken = Buffer.from(`${togglAPIToken}:api_token`)
-    .toString('base64')
-
   return axios.create({
     baseURL: togglBaseURL,
     headers: {
-      Authorization: `Basic ${basicAuthToken}`
+      Authorization: `Basic ${bufferToken(togglAPIToken)}`
     },
     ...options
   })

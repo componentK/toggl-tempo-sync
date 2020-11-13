@@ -1,11 +1,17 @@
 const bluebird = require('bluebird')
 
 /**
- * @var {ConfigResponse}config
+ * @var {ConfigResponse} config
  */
 const config = require('./config')
-const { formatDate } = require('./helpers/date')
-const { getUniqueEntries, parseJiraData } = require('./helpers/entry')
+const {
+  formatDate,
+  formatTime
+} = require('./helpers/date')
+const {
+  getUniqueEntries,
+  parseJiraData
+} = require('./helpers/entry')
 const { tempoClient, togglClient } = require('./services/client.js')
 const { queryTogglEntries } = require('./services/togglEntries')
 const { queryTempoEntries } = require('./services/tempoEntries')
@@ -38,14 +44,14 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
   await bluebird.map(
     parsedEntries,
     async ({ issueKey, start, duration, comment }) => (
-      tempoClient().post('worklogs/', {
-        worker: config.tempoWorker,
-        originTaskId: issueKey,
-        started: formatDate(start),
+      tempoClient().post('worklogs', {
+        authorAccountId: config.JiraAccountId,
+        issueKey,
+        startDate: formatDate(start),
+        startTime: formatTime(start),
         timeSpentSeconds: duration,
         billableSeconds: duration,
-        comment,
-        includeNonWorkingDays: true
+        description: comment
       }))
   )
 
@@ -62,7 +68,7 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
  * @return {Promise<void>}
  */
 const removeFromTempo = async (from, to, utc, dryRun = false) => {
-  const entries = await queryTempoEntries(tempoClient(), config.tempoWorker, from, to)
+  const entries = await queryTempoEntries(tempoClient(), from, to)
 
   if (dryRun) {
     console.log(`Would be removing ${entries.length} entries`)

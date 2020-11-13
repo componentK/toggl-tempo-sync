@@ -19,6 +19,19 @@ const formatDate = (inputDate) => {
 }
 
 /**
+ * Return hours, minutes and seconds from date string
+ * @param {string} inputTime
+ * @return {string}
+ */
+const formatTime = (inputTime) => {
+  const check = moment(inputTime, ['YYYY-MM-DD HH:mm:ss Z'])
+  if (check.isValid()) {
+    return check.format('HH:mm:ss')
+  }
+  throw new Error(`Input is not of valid format: ${inputTime}`)
+}
+
+/**
  * Outputs tempo style date
  *
  * @param {string} inputDate
@@ -57,6 +70,7 @@ const toDate = (date, utc) => encodeURIComponent(`${date}T23:59:59${utc}`)
 
 module.exports = {
   formatDate,
+  formatTime,
   fromDate,
   toDate
 }
