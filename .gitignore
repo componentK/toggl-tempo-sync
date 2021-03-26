@@ -10,3 +10,4 @@ size-report.html
 coverage
 .nyc_output
 pnpm-lock.yaml
+.idea

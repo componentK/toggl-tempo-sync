@@ -7,7 +7,7 @@ const nconf = require('nconf')
 const yaml = require('js-yaml')
 
 const format = {
-  parse: yaml.safeLoad,
+  parse: yaml.load,
   stringify: yaml.safeDump
 }
 
