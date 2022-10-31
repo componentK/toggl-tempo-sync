@@ -1,5 +1,5 @@
-const assert = require('assert').strict
-const { formatDate, fromDate, toDate } = require('../../helpers/date')
+import { strict as assert } from 'assert'
+import { formatDate, fromDate, toDate } from '../../helpers/date.js'
 
 describe('Date helper tests', () => {
   describe('Make sure the dates are output correctly', () => {

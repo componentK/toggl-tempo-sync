@@ -1,4 +1,4 @@
-module.exports.payload = [
+const payload = [
   {
     id: 1138234410,
     guid: '4bb563dcd150e8c6c6d55d9b076d6421',
@@ -154,7 +154,7 @@ module.exports.payload = [
     uid: 2301412
   }
 ]
-module.exports.expect = [
+const expect = [
   {
     start: '2019-03-21T08:54:00+00:00',
     duration: 1249,
@@ -181,3 +181,5 @@ module.exports.expect = [
     description: 'MAGENTO-2415 working with users solution'
   }
 ]
+
+export default { payload, expect }

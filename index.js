@@ -1,20 +1,10 @@
-const bluebird = require('bluebird')
-
-/**
- * @var {ConfigResponse} config
- */
-const config = require('./config')
-const {
-  formatDate,
-  formatTime
-} = require('./helpers/date')
-const {
-  getUniqueEntries,
-  parseJiraData
-} = require('./helpers/entry')
-const { tempoClient, togglClient } = require('./services/client.js')
-const { queryTogglEntries } = require('./services/togglEntries')
-const { queryTempoEntries } = require('./services/tempoEntries')
+import bluebird from 'bluebird'
+import config from './config/index.js'
+import { formatDate, formatTime } from './helpers/date.js'
+import { getUniqueEntries, parseJiraData } from './helpers/entry.js'
+import { tempoClient, togglClient } from './services/client.js'
+import { queryTogglEntries } from './services/togglEntries.js'
+import { queryTempoEntries } from './services/tempoEntries.js'
 
 /**
  * Main logic for toggl to tempo entry creation
@@ -52,7 +42,8 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
         timeSpentSeconds: duration,
         billableSeconds: duration,
         description: comment
-      }))
+      }).catch(e => console.log(e.message))
+    )
   )
 
   console.log('number of worklogs added to tempo', parsedEntries.length)

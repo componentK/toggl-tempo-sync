@@ -1,6 +1,6 @@
-const _ = require('lodash')
-const moment = require('moment')
-const isNumber = require('is-number')
+import _ from 'lodash'
+import moment from 'moment'
+import isNumber from 'is-number'
 
 /**
  * Compacts existing entries into one and sums up duration.
@@ -33,7 +33,7 @@ function compactAllEntries (result, value, key, object) {
  * @param {TogglEntry[]} timeEntries
  * @return {TogglEntry[]}
  */
-const getUniqueEntries = timeEntries =>
+export const getUniqueEntries = timeEntries =>
   _(timeEntries)
     .groupBy((value) => moment(value.start).format('MM-DD-YYYY'))
     .map((entriesByDate) =>
@@ -50,7 +50,7 @@ const getUniqueEntries = timeEntries =>
  * @param {TogglEntry} timeEntry
  * @return {TogglEntry | Object}
  */
-const parseJiraData = timeEntry => {
+export const parseJiraData = timeEntry => {
   const { description } = timeEntry
 
   if (description.includes('-')) {
@@ -66,9 +66,4 @@ const parseJiraData = timeEntry => {
   }
   console.log(`Cannot parse out JIRA key from entry: "${description}"`)
   return timeEntry
-}
-
-module.exports = {
-  getUniqueEntries,
-  parseJiraData
 }

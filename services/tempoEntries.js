@@ -6,15 +6,11 @@
  * @param {string} to - date in `2019-04-25` format
  * @return {Promise<TempoEntry[]>}
  */
-const queryTempoEntries = async (tempoClient, from, to) => {
+export const queryTempoEntries = async (tempoClient, from, to) => {
   const { data: timeEntries } = await tempoClient.post('worklogs', {
     from,
     to
   })
 
   return timeEntries
-}
-
-module.exports = {
-  queryTempoEntries
 }

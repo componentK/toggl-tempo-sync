@@ -1,16 +1,11 @@
-const axios = require('axios')
-const {
-  togglAPIToken,
-  togglBaseURL,
-  tempoCloudURL,
-  tempoCloudApiKey
-} = require('../config')
+import axios from 'axios'
+import config  from '../config/index.js'
 
-module.exports.tempoClient = (options = {}) => {
+export function tempoClient (options = {}) {
   return axios.create({
-    baseURL: tempoCloudURL,
+    baseURL: config.tempoCloudURL,
     headers: {
-      Authorization: `Bearer ${tempoCloudApiKey}`
+      Authorization: `Bearer ${config.tempoCloudApiKey}`
     },
     timeout: 60 * 4 * 1000, // 4 min
     ...options
@@ -25,11 +20,11 @@ module.exports.tempoClient = (options = {}) => {
 const bufferToken = (token) =>
   Buffer.from(`${token}:api_token`).toString('base64')
 
-module.exports.togglClient = (options = {}) => {
+export function togglClient (options = {}) {
   return axios.create({
-    baseURL: togglBaseURL,
+    baseURL: config.togglBaseURL,
     headers: {
-      Authorization: `Basic ${bufferToken(togglAPIToken)}`
+      Authorization: `Basic ${bufferToken(config.togglAPIToken)}`
     },
     ...options
   })

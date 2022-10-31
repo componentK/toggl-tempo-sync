@@ -1,4 +1,4 @@
-const moment = require('moment')
+import moment from 'moment'
 
 /**
  * Checks incoming date to be of correct format
@@ -7,7 +7,7 @@ const moment = require('moment')
  *
  * @throws Error - in case the input is not valid
  */
-const formatDate = (inputDate) => {
+export const formatDate = (inputDate) => {
   if (!inputDate) {
     return moment().format('YYYY-MM-DD')
   }
@@ -23,7 +23,7 @@ const formatDate = (inputDate) => {
  * @param {string} inputTime
  * @return {string}
  */
-const formatTime = (inputTime) => {
+export const formatTime = (inputTime) => {
   const check = moment(inputTime, ['YYYY-MM-DD HH:mm:ss Z'])
   if (check.isValid()) {
     return check.format('HH:mm:ss')
@@ -51,13 +51,13 @@ const formatTime = (inputTime) => {
 // }
 
 /**
- * Encodes the From date into a proper format
+ * Encodes the "from" date into a proper format
  *
  * @param {string} date - date in 'YYYY-MM-DD' format
  * @param {string} utc - e.g. +01:00 for UTC+1
  * @return {string}
  */
-const fromDate = (date, utc) => encodeURIComponent(`${date}T00:00:00${utc}`)
+export const fromDate = (date, utc) => encodeURIComponent(`${date}T00:00:00${utc}`)
 
 /**
  * Encodes the To date into a proper format
@@ -66,11 +66,4 @@ const fromDate = (date, utc) => encodeURIComponent(`${date}T00:00:00${utc}`)
  * @param {string} utc - e.g. +01:00 for UTC+1
  * @return {string}
  */
-const toDate = (date, utc) => encodeURIComponent(`${date}T23:59:59${utc}`)
-
-module.exports = {
-  formatDate,
-  formatTime,
-  fromDate,
-  toDate
-}
+export const toDate = (date, utc) => encodeURIComponent(`${date}T23:59:59${utc}`)

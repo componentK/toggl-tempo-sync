@@ -1,4 +1,4 @@
-const { fromDate, toDate } = require('../helpers/date')
+import { fromDate, toDate } from '../helpers/date.js'
 
 /**
  * Retrieves entries from Toggl
@@ -9,13 +9,10 @@ const { fromDate, toDate } = require('../helpers/date')
  * @param {string} utc - UTC hours to add, e.g. `+01:00` for UTC+1
  * @return {Promise<TogglEntry[]>}
  */
-const queryTogglEntries = async (togglClient, from, to, utc) => {
+export const queryTogglEntries = async (togglClient, from, to, utc) => {
   const { data: timeEntries } = await togglClient
     .get(`time_entries?start_date=${fromDate(from, utc)}&end_date=${toDate(to, utc)}`)
+    .catch(e => console.log(e.message))
 
   return timeEntries
-}
-
-module.exports = {
-  queryTogglEntries
 }
