@@ -52,7 +52,7 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
         timeSpentSeconds: duration,
         billableSeconds: duration,
         description: comment
-      }))
+      }).catch(e => printError(e)))
   )
 
   console.log('number of worklogs added to tempo', parsedEntries.length)
@@ -89,8 +89,29 @@ const toDate = configToDate || (config._[1] ? formatDate(config._[1]) : fromDate
 
 if (config.delete) {
   removeFromTempo(fromDate, toDate, config.utc, config.dryRun)
-    .catch(error => console.log(error.message))
+    .catch(error => printError(error))
 } else {
   transferFromTogglToTempo(fromDate, toDate, config.utc, config.dryRun)
-    .catch(error => console.log(error.message))
+    .catch(error => printError(error))
+}
+
+/**
+ * Helps print errors
+ * @param {AxiosError} error
+ */
+const printError = error => {
+  console.log(translateError(error))
+}
+/**
+ * Structures error
+ * @param {AxiosError} error
+ * @return {string}
+ */
+const translateError = error => {
+  return JSON.stringify({
+    status: error.response.status,
+    statusText: error.response.statusText,
+    host: error.config.baseURL,
+    message: error.message
+  })
 }

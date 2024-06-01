@@ -1,4 +1,4 @@
-togglBaseURL: 'https://api.track.toggl.com/api/v8'
+togglBaseURL: 'https://api.track.toggl.com/api/v9'
 togglAPIToken: ''
 
 # Get your account ID by using the Atlassian/JIRA API: https://your-domain.atlassian.com/rest/api/3/myself

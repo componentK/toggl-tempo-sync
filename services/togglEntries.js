@@ -11,7 +11,7 @@ const { fromDate, toDate } = require('../helpers/date')
  */
 const queryTogglEntries = async (togglClient, from, to, utc) => {
   const { data: timeEntries } = await togglClient
-    .get(`time_entries?start_date=${fromDate(from, utc)}&end_date=${toDate(to, utc)}`)
+    .get(`me/time_entries?start_date=${fromDate(from, utc)}&end_date=${toDate(to, utc)}`)
 
   return timeEntries
 }
