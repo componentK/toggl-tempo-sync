@@ -108,10 +108,13 @@ const printError = error => {
  * @return {string}
  */
 const translateError = error => {
+  const errorList = error.response.data.errors.map(err => err.message)
   return JSON.stringify({
+    url: error.config.method.toUpperCase() + ' ' + error.config.baseURL + error.config.url,
     status: error.response.status,
     statusText: error.response.statusText,
-    host: error.config.baseURL,
-    message: error.message
+    message: error.message,
+    errorList,
+    requestBody: error.config.data
   })
 }
