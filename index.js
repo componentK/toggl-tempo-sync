@@ -14,7 +14,10 @@ const {
   getUniqueEntries,
   parseJiraData
 } = require('./helpers/entry')
-const { tempoClient, togglClient } = require('./services/client.js')
+const {
+  createTempoClient,
+  createTogglClient
+} = require('./services/client.js')
 const { queryTogglEntries } = require('./services/togglEntries')
 const { queryTempoEntries } = require('./services/tempoEntries')
 
@@ -28,7 +31,8 @@ const { queryTempoEntries } = require('./services/tempoEntries')
  * @return {Promise<void>}
  */
 const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
-  let timeEntries = await queryTogglEntries(togglClient(), from, to, utc)
+  const toggleClient = createTogglClient()
+  let timeEntries = await queryTogglEntries(toggleClient, from, to, utc)
   console.log('number of time entries from toggl', timeEntries.length)
 
   if (config.compact.all) {
@@ -42,6 +46,7 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
 
   if (dryRun) return
 
+  const tempoClient = createTempoClient()
   // create worklogs in tempo from toggl time entries
   await Promise.all(
     parsedEntries.map(
@@ -50,8 +55,8 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
                start,
                duration,
                comment
-             }) => (
-        tempoClient().post('worklogs', {
+             }) => {
+        return tempoClient.post('worklogs', {
           authorAccountId: config.JiraAccountId,
           issueKey,
           startDate: formatDate(start),
@@ -60,7 +65,7 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
           billableSeconds: duration,
           description: comment
         }).catch(e => printError(e))
-      )
+      }
     )
   )
 
@@ -77,18 +82,21 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
  * @throws {Error}
  */
 const removeFromTempo = async (from, to, dryRun = false) => {
-  const entries = await queryTempoEntries(tempoClient(), from, to)
+  const entries = await queryTempoEntries(createTempoClient(), from, to)
 
   if (dryRun) {
     console.log(`Would be removing ${entries.length} entries`)
+    console.log('first entry', _get(entries, '[0]'))
+    console.log('last entry', _get(entries, `[${entries.length - 1}]`))
     return
   }
 
+  const tempoClient = createTempoClient()
   await Promise.all(
     entries.map(
-      async ({ tempoWorklogId }) => (
-        tempoClient().delete(`worklogs/${tempoWorklogId}`)
-      )
+      async ({ tempoWorklogId }) => {
+        return tempoClient.delete(`worklogs/${tempoWorklogId}`)
+      }
     )
   )
   console.log(`Finished removing ${entries.length} entries`)
@@ -109,10 +117,12 @@ if (config.delete) {
 /**
  * Helps print errors
  * @param {AxiosError} error
+ * @throws {Error}
  */
 const printError = error => {
   if (!error.response) {
-    throw Error(error.message)
+    console.log(error)
+    throw Error()
   }
   console.log(translateError(error))
   throw Error(error.message)
