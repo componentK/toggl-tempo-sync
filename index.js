@@ -1,4 +1,5 @@
 const bluebird = require('bluebird')
+const _get = require('lodash.get')
 
 /**
  * @var {ConfigResponse} config
@@ -108,9 +109,9 @@ const printError = error => {
  * @return {string}
  */
 const translateError = error => {
-  const errorList = error.response.data.errors.map(err => err.message)
+  const errorList = _get(error, 'response.data.errors', []).map(err => err.message)
   return JSON.stringify({
-    url: error.config.method.toUpperCase() + ' ' + error.config.baseURL + error.config.url,
+    url: `${error.config.method.toUpperCase()} ${error.config.baseURL}${error.config.url}`,
     status: error.response.status,
     statusText: error.response.statusText,
     message: error.message,
