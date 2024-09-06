@@ -51,11 +51,11 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
   await Promise.all(
     parsedEntries.map(
       async ({
-               issueKey,
-               start,
-               duration,
-               comment
-             }) => {
+        issueKey,
+        start,
+        duration,
+        comment
+      }) => {
         return tempoClient.post('worklogs', {
           authorAccountId: config.JiraAccountId,
           issueKey,
