@@ -1,4 +1,5 @@
-const bluebird = require('bluebird')
+'use strict'
+
 const _get = require('lodash.get')
 
 /**
@@ -42,18 +43,25 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
   if (dryRun) return
 
   // create worklogs in tempo from toggl time entries
-  await bluebird.map(
-    parsedEntries,
-    async ({ issueKey, start, duration, comment }) => (
-      tempoClient().post('worklogs', {
-        authorAccountId: config.JiraAccountId,
-        issueKey,
-        startDate: formatDate(start),
-        startTime: formatTime(start),
-        timeSpentSeconds: duration,
-        billableSeconds: duration,
-        description: comment
-      }).catch(e => printError(e)))
+  await Promise.all(
+    parsedEntries.map(
+      async ({
+               issueKey,
+               start,
+               duration,
+               comment
+             }) => (
+        tempoClient().post('worklogs', {
+          authorAccountId: config.JiraAccountId,
+          issueKey,
+          startDate: formatDate(start),
+          startTime: formatTime(start),
+          timeSpentSeconds: duration,
+          billableSeconds: duration,
+          description: comment
+        }).catch(e => printError(e))
+      )
+    )
   )
 
   console.log('number of worklogs added to tempo', parsedEntries.length)
@@ -64,11 +72,11 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
  *
  * @param {date8601} from
  * @param {date8601} to
- * @param {string} utc
  * @param {boolean|string} dryRun
  * @return {Promise<void>}
+ * @throws {Error}
  */
-const removeFromTempo = async (from, to, utc, dryRun = false) => {
+const removeFromTempo = async (from, to, dryRun = false) => {
   const entries = await queryTempoEntries(tempoClient(), from, to)
 
   if (dryRun) {
@@ -76,10 +84,12 @@ const removeFromTempo = async (from, to, utc, dryRun = false) => {
     return
   }
 
-  await bluebird.map(
-    entries,
-    async ({ tempoWorklogId }) => (
-      tempoClient().delete(`worklogs/${tempoWorklogId}`))
+  await Promise.all(
+    entries.map(
+      async ({ tempoWorklogId }) => (
+        tempoClient().delete(`worklogs/${tempoWorklogId}`)
+      )
+    )
   )
   console.log(`Finished removing ${entries.length} entries`)
 }
@@ -89,7 +99,7 @@ const configToDate = config.to ? formatDate(config.to) : config.to
 const toDate = configToDate || (config._[1] ? formatDate(config._[1]) : fromDate)
 
 if (config.delete) {
-  removeFromTempo(fromDate, toDate, config.utc, config.dryRun)
+  removeFromTempo(fromDate, toDate, config.dryRun)
     .catch(error => printError(error))
 } else {
   transferFromTogglToTempo(fromDate, toDate, config.utc, config.dryRun)
@@ -101,8 +111,13 @@ if (config.delete) {
  * @param {AxiosError} error
  */
 const printError = error => {
+  if (!error.response) {
+    throw Error(error.message)
+  }
   console.log(translateError(error))
+  throw Error(error.message)
 }
+
 /**
  * Structures error
  * @param {AxiosError} error

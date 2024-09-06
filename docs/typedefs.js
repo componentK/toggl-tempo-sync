@@ -7,16 +7,6 @@
  */
 
 /**
- * @typedef TempoEntry
- * @property {number} id - entry to reference
- * @property {number} jiraWorklogId - seems to be the same as id
- * @property {string} comment - e.g. "This is a ticket"
- * @property {date8601} dateStarted - ISO 8601 format
- * @property {date8601} dateCreated - ISO 8601 format
- * @property {date8601} dateUpdated - ISO 8601 format
- */
-
-/**
  * @typedef {string} date8601
  * @description String in the ISO 8601 format, e.g. YYYY-MM-ddT00:00:00.000+0000
  */

@@ -9,7 +9,7 @@
     "email": "k@componentk.com"
   },
   "scripts": {
-    "inspect": "node index.js --inspect index.js",
+    "inspect": "node index.js --inspect index.js --dryRun",
     "break": "node index.js --inspect-brk=0.0.0.0 inedx.js",
     "start": "node index.js",
     "test": "./node_modules/.bin/mocha --recursive test/",
@@ -21,7 +21,7 @@
     "toggl": "./index.js"
   },
   "engines": {
-    "node": "18"
+    "node": "21.2"
   },
   "repository": {
     "type": "git",

@@ -1,3 +1,5 @@
+'use strict'
+
 /**
  * Retrieves entries from Tempo
  *
@@ -7,12 +9,14 @@
  * @return {Promise<TempoEntry[]>}
  */
 const queryTempoEntries = async (tempoClient, from, to) => {
-  const { data: timeEntries } = await tempoClient.post('worklogs', {
+  const params = new URLSearchParams({
     from,
-    to
+    to,
+    limit: 100
   })
+  const { data: { results } } = await tempoClient.get(`worklogs`, { params })
 
-  return timeEntries
+  return results
 }
 
 module.exports = {
