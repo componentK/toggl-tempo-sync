@@ -1,11 +1,11 @@
 {
   "name": "coponentk-toggl-tempo-sync",
   "description": "A fork of a sync extension between Toggl and Tempo",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "main": "index.js",
   "license": "MIT",
   "author": {
-    "name": "Konstantin Kiritsenko",
+    "name": "Konstantin K",
     "email": "k@componentk.com"
   },
   "scripts": {

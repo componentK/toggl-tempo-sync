@@ -2,7 +2,7 @@ const moment = require('moment')
 
 /**
  * Checks incoming date to be of correct format
- * @param {string} [inputDate]
+ * @param {date|moment.MomentInput} inputDate
  * @return {string} - returns standard 'YYYY-MM-DD' format string
  *
  * @throws Error - in case the input is not valid
@@ -20,7 +20,7 @@ const formatDate = (inputDate) => {
 
 /**
  * Return hours, minutes and seconds from date string
- * @param {string} inputTime
+ * @param {date|moment.MomentInput} inputTime
  * @return {string}
  */
 const formatTime = (inputTime) => {

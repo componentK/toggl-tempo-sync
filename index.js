@@ -42,7 +42,11 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
 
   const parsedEntries = timeEntries
     .map((timeEntry) => parseJiraData(timeEntry))
-    .filter(({ issueKey }) => Boolean(issueKey))
+    // Skip entries with duration less than 30 seconds
+    .filter(({
+      issueKey,
+      duration
+    }) => Boolean(issueKey) && duration >= 30)
 
   if (dryRun) return
 
@@ -56,13 +60,15 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
         duration,
         comment
       }) => {
+        // We already skip sub 30 second entries, now we round up 30 and 59 seconds entries
+        const roundedDuration = duration < 60 ? 60 : duration
         return tempoClient.post('worklogs', {
           authorAccountId: config.JiraAccountId,
           issueKey,
           startDate: formatDate(start),
           startTime: formatTime(start),
-          timeSpentSeconds: duration,
-          billableSeconds: duration,
+          timeSpentSeconds: roundedDuration,
+          billableSeconds: roundedDuration,
           description: comment
         }).catch(e => printError(e))
       }
