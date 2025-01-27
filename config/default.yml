@@ -1,15 +1,21 @@
 togglBaseURL: 'https://api.track.toggl.com/api/v9'
 togglAPIToken: ''
 
-# Get your account ID by using the Atlassian/JIRA API: https://your-domain.atlassian.com/rest/api/3/myself
-JiraAccountId: 'atlassian_user_account_id'
-tempoCloudURL: 'https://api.tempo.io/core/3/'
+tempoCloudURL: 'https://api.tempo.io/4/'
 tempoCloudApiKey: 'api_bearer_token_example'
+
+# Needed to retrieve issueId's based on issueKeys from Atlassian
+# @see https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account
+JiraApiURL: 'https://your-domain.atlassian.net/rest/api/3'
+JiraUsername: 'atlassian_user_email@example.com'
+JiraAPIKey: 'atlassian_api_key'
+# Get your account ID by using the Atlassian/JIRA API: https://your-domain.atlassian.com/rest/api/3/myself
+JiraAccountId: 'atlassian_user_account_id' # optional (but will be faster if you save it)
 
 dryRun: false
 delete: false
 utc: '+01:00'
-# A list of issueKeys that will be compounded together instead of being a separate entry
+# A list of issueIds that will be compounded together instead of being a separate entry
 compact:
   all: false
   specificIssueKeys:

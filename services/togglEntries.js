@@ -1,3 +1,5 @@
+'use strict'
+
 const { fromDate, toDate } = require('../helpers/date')
 
 /**

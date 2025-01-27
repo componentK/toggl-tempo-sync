@@ -1,10 +1,7 @@
 'use strict'
 
-const _get = require('lodash.get')
+const _get = require('lodash/get')
 
-/**
- * @var {ConfigResponse} config
- */
 const config = require('./config')
 const {
   formatDate,
@@ -20,12 +17,16 @@ const {
 } = require('./services/client.js')
 const { queryTogglEntries } = require('./services/togglEntries')
 const { queryTempoEntries } = require('./services/tempoEntries')
+const {
+  getJiraAccountId,
+  getIssueMap
+} = require('./helpers/jira')
 
 /**
  * Main logic for toggl to tempo entry creation
  *
- * @param {date8601} from
- * @param {date8601} to
+ * @param {Date8601} from
+ * @param {Date8601} to
  * @param {string} utc
  * @param {boolean|string} dryRun
  * @return {Promise<void>}
@@ -41,21 +42,31 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
   }
 
   const parsedEntries = timeEntries
-    .map((timeEntry) => parseJiraData(timeEntry))
+    .map(timeEntry => parseJiraData(timeEntry))
     // Skip entries with duration less than 30 seconds
     .filter(({
       issueKey,
       duration
     }) => Boolean(issueKey) && duration >= 30)
 
+  // We can no longer use issueKey like MAGE-122, so we need to retrieve a mpa (issue key to ID)
+  const issueKeys = [...new Set(parsedEntries.map(({ issueKey }) => issueKey))]
+  const issueMap = await getIssueMap(issueKeys)
+
+  const populatedEntries = parsedEntries.map(issue => ({
+    ...issue,
+    issueId: issueMap[issue.issueKey.toUpperCase()] || null
+  }))
+
   if (dryRun) return
 
+  const authorAccountId = await getJiraAccountId()
   const tempoClient = createTempoClient()
   // create worklogs in tempo from toggl time entries
   await Promise.all(
-    parsedEntries.map(
+    populatedEntries.map(
       async ({
-        issueKey,
+        issueId,
         start,
         duration,
         comment
@@ -63,8 +74,8 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
         // We already skip sub 30 second entries, now we round up 30 and 59 seconds entries
         const roundedDuration = duration < 60 ? 60 : duration
         return tempoClient.post('worklogs', {
-          authorAccountId: config.JiraAccountId,
-          issueKey,
+          authorAccountId,
+          issueId,
           startDate: formatDate(start),
           startTime: formatTime(start),
           timeSpentSeconds: roundedDuration,
@@ -81,8 +92,8 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
 /**
  * Main logic for deleting Tempo entries
  *
- * @param {date8601} from
- * @param {date8601} to
+ * @param {Date8601} from
+ * @param {Date8601} to
  * @param {boolean|string} dryRun
  * @return {Promise<void>}
  * @throws {Error}

@@ -25,5 +25,7 @@ nconfProvider.file('app-default', {
   file: `${__dirname}/default.yml`,
   format
 })
-
+/**
+ * @type {ConfigResponse}
+ */
 module.exports = nconfProvider.get()

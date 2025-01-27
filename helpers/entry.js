@@ -1,3 +1,5 @@
+'use strict'
+
 const _ = require('lodash')
 const moment = require('moment')
 const isNumber = require('is-number')
@@ -38,7 +40,15 @@ const getUniqueEntries = timeEntries =>
     .groupBy((value) => moment(value.start).format('MM-DD-YYYY'))
     .map((entriesByDate) =>
       _(entriesByDate)
-        .map(({ description, start, duration }) => ({ description, start, duration }))
+        .map(({
+          description,
+          start,
+          duration
+        }) => ({
+          description,
+          start,
+          duration
+        }))
         .transform(compactAllEntries, [])
         .value())
     .flatten()
@@ -48,7 +58,7 @@ const getUniqueEntries = timeEntries =>
  * Parses data and returns a modified TogglEntry
  *
  * @param {TogglEntry} timeEntry
- * @return {TogglEntry | Object}
+ * @returns {TogglEntry | {issueKey: string, comment:string}}
  */
 const parseJiraData = timeEntry => {
   const { description } = timeEntry

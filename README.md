@@ -55,6 +55,11 @@ Available configurations:
 * `tempoPassword` - password you use to log in to JIRA
 * `tempoBaseURL` - you will need to adjust this to your JIRA url + tempo API path. For the most part, just replace `example.com` 
 with the JIRA URL
+* `JiraApiURL` - Atlassian JIRA endpoint
+* `JiraUsername` - normally the atlassian email
+* `JiraAPIKey` - the API key can be retrieved for your Atlassian profile, see [doc]
+* `JiraAccountId` - can be found using the `/myself` endpoint, but not required anymore as we will make the call
+  ourselves to get it
 * `utc` (default: +01:00) - UTC offset to be used for Toggl entry retrieval in *ISO 8601*, e.g. `+01:00` for UTC+1
 * `delete` (default: false) - deletes the specified date entries from Tempo on the Atlassian server
 * `dryRun` (default: false) - runs the command in dry mode, meaning only reading operations will happen, no write operations 
@@ -100,3 +105,5 @@ It was also too destructive with Tempo by deleting all entries using `from` date
 * Publish to NPM so that the plugin is globally available
 
 [install node]: https://nodejs.org/en/download/
+
+[doc]: https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account

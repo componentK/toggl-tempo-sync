@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.2.0
+
+- added Jira API configuration requirement (due to Tempo dropping `issueKey` support)
+- updated tempo API to v4
+- removed `JiraAccountId` config (can now retrieve it via API)
+
 ## 2.1.0
 
 - added better error logging
