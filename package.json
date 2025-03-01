@@ -1,7 +1,7 @@
 {
   "name": "coponentk-toggl-tempo-sync",
   "description": "A fork of a sync extension between Toggl and Tempo",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "main": "index.js",
   "license": "MIT",
   "author": {
