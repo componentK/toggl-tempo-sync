@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.0
+
+- added Toggl project ID filter
+
 ## 2.2.1
 
 - fixed mapping issue IDs for project keys which moved to a different project, e.g JIRA-123 -> OTHER-123
