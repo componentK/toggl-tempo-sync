@@ -1,6 +1,9 @@
 'use strict'
 
-const { fromDate, toDate } = require('../helpers/date')
+const {
+  fromDate,
+  toDate
+} = require('../helpers/date')
 
 /**
  * Retrieves entries from Toggl
@@ -18,6 +21,47 @@ const queryTogglEntries = async (togglClient, from, to, utc) => {
   return timeEntries
 }
 
+/**
+ * Retrieves Toggl client data
+ *
+ * @param {AxiosInstance|*} togglClient
+ * @return {Promise<ToggleAccountEntry>}
+ */
+const getAccountData = async (togglClient) => {
+  const { data } = await togglClient(`me`)
+  return data
+}
+
+/**
+ * Retrieves Toggl client data
+ *
+ * @param {AxiosInstance|*} togglClient
+ * @param {number} workspaceId
+ * @param {?string} name - e.g. Nvidia
+ * @return {Promise<TogglClientEntity[]>}
+ */
+const getActiveClients = async (togglClient, workspaceId, name = null) => {
+  const { data } = await togglClient
+    .get(`workspaces/${workspaceId}/clients?status=active${name ? `&name=${name}` : ''}`)
+  return data
+}
+
+/**
+ * Retrieves Toggl project data
+ *
+ * @param {AxiosInstance|*} togglClient
+ * @param {number} workspaceId
+ * @param {string[]|number[]} clientIds
+ * @return {Promise<ToggleProject[]>}
+ */
+const getActiveProjects = async (togglClient, workspaceId, clientIds) => {
+  const { data } = await togglClient.get(`workspaces/${workspaceId}/projects?statuses=active&client_ids=${clientIds.join(',')}`)
+  return data
+}
+
 module.exports = {
-  queryTogglEntries
+  queryTogglEntries,
+  getActiveClients,
+  getAccountData,
+  getActiveProjects
 }

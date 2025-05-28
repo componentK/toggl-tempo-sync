@@ -78,7 +78,21 @@ const parseJiraData = timeEntry => {
   return timeEntry
 }
 
+/**
+ * @param {TogglEntry} entry
+ * @param {number[]} projectIds
+ * @returns {boolean}
+ */
+const filterByProjectIds = (entry, projectIds) => {
+  // since it's optional we want to keep entries if no project id's are present
+  if (Array.isArray(projectIds) && projectIds.length === 0) {
+    return true
+  }
+  return projectIds.includes(entry.project_id)
+}
+
 module.exports = {
   getUniqueEntries,
-  parseJiraData
+  parseJiraData,
+  filterByProjectIds
 }

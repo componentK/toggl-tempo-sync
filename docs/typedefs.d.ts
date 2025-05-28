@@ -22,6 +22,74 @@ interface TempoEntry {
     };
 }
 
+export interface TogglClientEntity {
+    id: number; // client id
+    wid: number; // workspace id
+    archived: boolean;
+    name: string; // Nvidia
+    at: Date8601; // e.g. "2024-02-28T12:53:41+00:00"
+    creator_id: number;
+    total_count: number;
+}
+
+export interface ToggleAccountEntry {
+    "id": 2301412,
+    "api_token": string;
+    "email": string;
+    "fullname": string;
+    "timezone": string; // America/Phoenix
+    "2fa_enabled": false,
+    "toggl_accounts_id": string;
+    "default_workspace_id": number,
+    "beginning_of_week": 1,
+    "image_url": string;
+    "created_at": Date8601
+    "updated_at": Date8601
+    "openid_email": null,
+    "openid_enabled": true,
+    "country_id": null,
+    "has_password": true,
+    "at": Date8601
+    "intercom_hash": string;
+    "oauth_providers": string[],
+    "authorization_updated_at": Date8601
+}
+
+export interface ToggleProject {
+    "id": number,
+    "workspace_id": number,
+    "client_id": number,
+    "name": string, // project name, e.g Nvidia
+    "is_private": true,
+    "active": true,
+    "at": Date8601,
+    "created_at": Date8601,
+    "server_deleted_at": null,
+    "color": string, // "#d92b2b"
+    "billable": false,
+    "template": null,
+    "auto_estimates": null,
+    "estimated_hours": null,
+    "estimated_seconds": null,
+    "rate": null,
+    "rate_last_updated": null,
+    "currency": null,
+    "recurring": false,
+    "template_id": null,
+    "recurring_parameters": null,
+    "fixed_fee": null,
+    "actual_hours": number,
+    "actual_seconds": number,
+    "total_count": 2,
+    "client_name": string,
+    "can_track_time": true,
+    "start_date": string, // "2022-08-10"
+    "status": string, // "active",
+    "wid": number,
+    "cid": number,
+    "pinned": false
+}
+
 export interface TogglEntry {
     id: number;
     workspace_id: number;
@@ -85,6 +153,7 @@ export interface ConfigResponse {
     utc: string; // e.g. +04:00 or -05:00
     to: Date8601;
     from: Date8601;
+    getClients?: boolean | string; // returns client data
     delete?: boolean | string; // whether to delete entries from Atlassian Tempo
     dryRun?: boolean | string; // if true, will not run ANY API calls that modify entries
     togglBaseURL: string; // URL of Toggl API service
@@ -101,4 +170,5 @@ export interface ConfigResponse {
         all: boolean; // whether to compact all entries with same summary into one or keep them all separate
         specificIssueKeys: string[]; // can compact only specific issue keys instead of all keys
     }
+    projectIds: number[]
 }

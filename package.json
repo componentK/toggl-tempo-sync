@@ -12,6 +12,7 @@
     "inspect": "node index.js --inspect index.js --dryRun",
     "break": "node index.js --inspect-brk=0.0.0.0 inedx.js",
     "start": "node index.js",
+    "getClients": "node index.js --getClients",
     "test": "./node_modules/.bin/mocha --recursive test/",
     "lint": "./node_modules/.bin/eslint -c .eslintrc index.js helpers/ test/",
     "cover": "./node_modules/.bin/nyc npm test",

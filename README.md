@@ -89,7 +89,7 @@ node index.js --from 03-15 --to 03-18 --dryRun --delete
 
 // Can also accept no name parameters as first two
 node index.js 03-15 03-18 --dryRun
-npm start 03-15 03-18 --dryRun
+npm start 05-28 -- --dryRun
 ```
 
 ## Misc
@@ -101,7 +101,6 @@ It was also too destructive with Tempo by deleting all entries using `from` date
 * We are not using Toggl's paid features like `Tasks`,
  so it could be implemented, but that would require some major refactoring of this spaghetti
 * A flag to allow to compound short entries instead of all, maybe any entry below 5 min can be compacted with others
-* Allow only specific Toggl clients to be imported
 * Publish to NPM so that the plugin is globally available
 
 [install node]: https://nodejs.org/en/download/

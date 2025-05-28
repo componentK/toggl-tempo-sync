@@ -9,13 +9,24 @@ const {
 } = require('./helpers/date')
 const {
   getUniqueEntries,
-  parseJiraData
+  parseJiraData,
+  filterByProjectIds
 } = require('./helpers/entry')
 const {
   createTempoClient,
   createTogglClient
 } = require('./services/client.js')
-const { queryTogglEntries } = require('./services/togglEntries')
+
+const {
+  printClientProjects,
+  printError
+} = require('./services/printer')
+const {
+  queryTogglEntries,
+  getAccountData,
+  getActiveClients,
+  getActiveProjects
+} = require('./services/togglEntries')
 const { queryTempoEntries } = require('./services/tempoEntries')
 const {
   getJiraAccountId,
@@ -35,6 +46,11 @@ const transferFromTogglToTempo = async (from, to, utc, dryRun = false) => {
   const toggleClient = createTogglClient()
   let timeEntries = await queryTogglEntries(toggleClient, from, to, utc)
   console.log('number of time entries from toggl', timeEntries.length)
+
+  if (config.projectIds) {
+    timeEntries = timeEntries.filter(entry => filterByProjectIds(entry, config.projectIds))
+    console.log('number of whitelisted project entries', timeEntries.length)
+  }
 
   if (config.compact.all) {
     timeEntries = getUniqueEntries(timeEntries)
@@ -119,45 +135,26 @@ const removeFromTempo = async (from, to, dryRun = false) => {
   console.log(`Finished removing ${entries.length} entries`)
 }
 
+const getDefaultSpaceClients = async () => {
+  const toggleClient = createTogglClient()
+  const { default_workspace_id } = await getAccountData(toggleClient)
+  const activeClients = await getActiveClients(toggleClient, default_workspace_id)
+  const clientIds = activeClients.map(item => item.id)
+  return getActiveProjects(toggleClient, default_workspace_id, clientIds)
+}
+
 const fromDate = formatDate(config.from ? config.from : config._[0])
 const configToDate = config.to ? formatDate(config.to) : config.to
 const toDate = configToDate || (config._[1] ? formatDate(config._[1]) : fromDate)
 
-if (config.delete) {
+if (config.getClients) {
+  getDefaultSpaceClients()
+    .then(result => printClientProjects(result))
+    .catch(err => printError(err))
+} else if (config.delete) {
   removeFromTempo(fromDate, toDate, config.dryRun)
     .catch(error => printError(error))
 } else {
   transferFromTogglToTempo(fromDate, toDate, config.utc, config.dryRun)
     .catch(error => printError(error))
-}
-
-/**
- * Helps print errors
- * @param {AxiosError} error
- * @throws {Error}
- */
-const printError = error => {
-  if (!error.response) {
-    console.log(error)
-    throw Error()
-  }
-  console.log(translateError(error))
-  throw Error(error.message)
-}
-
-/**
- * Structures error
- * @param {AxiosError} error
- * @return {string}
- */
-const translateError = error => {
-  const errorList = _get(error, 'response.data.errors', []).map(err => err.message)
-  return JSON.stringify({
-    url: `${error.config.method.toUpperCase()} ${error.config.baseURL}${error.config.url}`,
-    status: error.response.status,
-    statusText: error.response.statusText,
-    message: error.message,
-    errorList,
-    requestBody: error.config.data
-  })
 }

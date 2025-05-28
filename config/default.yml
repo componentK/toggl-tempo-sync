@@ -20,3 +20,8 @@ compact:
   all: false
   specificIssueKeys:
     - 'MAGENTO-123'
+
+# optionally filter the Toggl entries by client/projectIds. Run the `npm run getClients` to get the IDs
+projectIds:
+  - 1111111
+  - 2313232
