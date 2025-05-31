@@ -1,5 +1,7 @@
 'use strict'
 
+const _get = require('lodash/get')
+
 /**
  * @param {ToggleProject[]} projects
  */

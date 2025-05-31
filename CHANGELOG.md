@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.1
+
+- fixed printer
+
 ## 2.3.0
 
 - added Toggl project ID filter
