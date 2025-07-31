@@ -1,7 +1,7 @@
 {
   "name": "coponentk-toggl-tempo-sync",
   "description": "A fork of a sync extension between Toggl and Tempo",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "main": "index.js",
   "license": "MIT",
   "author": {
@@ -29,7 +29,7 @@
     "url": "https://github.com/componentK/toggl-tempo-sync"
   },
   "dependencies": {
-    "axios": "1.7.7",
+    "axios": "^1.11.0",
     "axios-rate-limit": "^1.4.0",
     "fs-extra": "^9.1.0",
     "is-number": "^7.0.0",

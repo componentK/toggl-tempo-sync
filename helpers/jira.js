@@ -36,6 +36,10 @@ const getMissingIssueKeys = (issueKeys, apiReducedIssue) =>
  * @returns {Promise<Object.<string, string>>} - e.g. { "JIRA-111": "1234" }
  */
 const getIssueMap = async (issueKeys) => {
+  if (issueKeys.length === 0) {
+    return {}
+  }
+
   const jiraClient = createJiraClient()
   const reducedIssueList = await getReducedIssueList(jiraClient, issueKeys)
   const apiReducedIssue = reducedIssueList.reduce((map, {

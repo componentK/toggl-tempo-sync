@@ -57,7 +57,9 @@ const printError = error => {
  * @private
  */
 const translateError = error => {
-  const errorList = _get(error, 'response.data.errors', []).map(err => err.message)
+  let response = _get(error, 'response.data.errors', [])
+  response = isEmptyObj(response) ? [] : response
+  const errorList = response.map(err => err.message)
   return JSON.stringify({
     url: `${error.config.method.toUpperCase()} ${error.config.baseURL}${error.config.url}`,
     status: error.response.status,
@@ -67,6 +69,12 @@ const translateError = error => {
     requestBody: error.config.data
   })
 }
+
+// Check if it's an object (not null, not array)
+const isObj = val => val !== null && typeof val === 'object' && !Array.isArray(val)
+// Check if it's an empty object
+const isEmpty = obj => Object.keys(obj).length === 0
+const isEmptyObj = val => isObj(val) && isEmpty(val)
 
 module.exports = {
   printClientProjects,

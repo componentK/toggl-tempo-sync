@@ -135,6 +135,11 @@ const removeFromTempo = async (from, to, dryRun = false) => {
   console.log(`Finished removing ${entries.length} entries`)
 }
 
+/**
+ * Retrieves active workspaces and clients
+ *
+ * @returns {Promise<ToggleProject[]>}
+ */
 const getDefaultSpaceClients = async () => {
   const toggleClient = createTogglClient()
   const { default_workspace_id } = await getAccountData(toggleClient)

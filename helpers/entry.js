@@ -79,6 +79,8 @@ const parseJiraData = timeEntry => {
 }
 
 /**
+ * Filters entries with only allowed project IDs
+ *
  * @param {TogglEntry} entry
  * @param {number[]} projectIds
  * @returns {boolean}

@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.2
+
+- fixed querying JIRA when no issues are present
+- fixed printer not handling Axios 400 errors
+- updated axios package
+
 ## 2.3.1
 
 - fixed printer
